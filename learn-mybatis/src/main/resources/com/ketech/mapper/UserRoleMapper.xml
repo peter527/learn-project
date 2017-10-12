@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ketech.mapper.UserRoleMapper">
+    
+    <resultMap id="userRoleMap" type="UserRoleVO">
+        <id property="id" column="id"/>
+        <result property="userName" column="user_name"/>
+        <result property="userPassword" column="user_password"/>
+        <result property="userEmail" column="user_email"/>
+        <result property="userInfo" column="user_info"/>
+        <result property="headImg" column="head_img"/>
+        <result property="createTime" column="create_time"/>
+        <result property="role.id" column="role_id"/>
+        <result property="role.roleName" column="role_name"/>
+        <result property="role.enabled" column="enabled"/>
+        <result property="role.createBy" column="create_by"/>
+        <result property="role.createTime" column="role_create_time"/>
+    </resultMap>
+
+    <resultMap id="userRoleMapExtends" type="UserRoleVO" extends="com.ketech.mapper.SysUserMapper.BaseResultMap">
+        <result property="role.id" column="role_id"/>
+        <result property="role.roleName" column="role_name"/>
+        <result property="role.enabled" column="enabled"/>
+        <result property="role.createBy" column="create_by"/>
+        <result property="role.createTime" column="role_create_time"/>
+    </resultMap>
+
+    <resultMap id="userRoleMapAssociate" type="UserRoleVO" extends="com.ketech.mapper.SysUserMapper.BaseResultMap">
+        <association property="role" columnPrefix="role_" javaType="SysRole" resultMap="com.ketech.mapper.SysRoleMapper.BaseResultMap" />
+    </resultMap>
+
+    <resultMap id="userRoleMapSelect" type="UserRoleVO" extends="com.ketech.mapper.SysUserMapper.BaseResultMap">
+        <association property="role" column="{id=role_id}" select="selectRoleById" fetchType="lazy"/>
+    </resultMap>
+
+    <resultMap id="rolePrivilegeListMap" type="RolePrivilegeVO" extends="com.ketech.mapper.SysRoleMapper.BaseResultMap">
+        <collection property="privileges" columnPrefix="privilege_" resultMap="com.ketech.mapper.SysPrivilegeMapper.BaseResultMap"/>
+    </resultMap>
+    
+    <resultMap id="userRoleListMap" type="UserRolesVO" extends="com.ketech.mapper.SysUserMapper.BaseResultMap">
+        <collection property="roles" columnPrefix="role_" resultMap="rolePrivilegeListMap" />
+    </resultMap>
+
+    <resultMap id="userRoleLazyMap" type="UserRolesVO" extends="com.ketech.mapper.SysUserMapper.BaseResultMap">
+        <collection property="roles" column="{userId=id}" select="selectRoleByUserId"/>
+    </resultMap>
+
+    <resultMap id="rolePrivilegeLazyMap" type="RolePrivilegeVO" extends="com.ketech.mapper.SysRoleMapper.BaseResultMap">
+        <collection property="privileges" column="{roleId=id}" select="selectPrivilegeByRoleId"/>
+    </resultMap>
+
+    <select id="selectUserAndRoleById" resultType="UserRoleVO">
+        SELECT
+            u.id,
+            u.user_name userName,
+            u.user_password userPassword,
+            u.user_email userEmail,
+            u.user_info userInfo,
+            u.head_img headImg,
+            u.create_time createTime,
+            r.id "role.id",
+            r.role_name "role.roleName",
+            r.enabled "role.enabled",
+            r.create_by "role.createBy",
+            r.create_time "role.createTime"
+        FROM sys_user u
+        INNER JOIN sys_user_role ur ON u.id = ur.user_id
+        INNER JOIN sys_role r ON ur.role_id = r.id
+        WHERE u.id = #{id}
+    </select>
+
+    <select id="selectUserAndRoleById2" resultMap="userRoleMapAssociate">
+        SELECT
+            u.id,
+            u.user_name,
+            u.user_password,
+            u.user_email,
+            u.user_info,
+            u.head_img,
+            u.create_time,
+            r.id role_id,
+            r.role_name role_role_name,
+            r.enabled role_enabled,
+            r.create_by role_create_by,
+            r.create_time role_create_time
+        FROM sys_user u
+        INNER JOIN sys_user_role ur ON u.id = ur.user_id
+        INNER JOIN sys_role r ON ur.role_id = r.id
+        WHERE u.id = #{id}
+    </select>
+
+    <select id="selectUserAndRoleById3" resultMap="userRoleMapSelect">
+        SELECT
+        u.id,
+        u.user_name,
+        u.user_password,
+        u.user_email,
+        u.user_info,
+        u.head_img,
+        u.create_time,
+        ur.role_id
+        FROM sys_user u
+        INNER JOIN sys_user_role ur ON u.id = ur.user_id
+        WHERE u.id = #{id}
+    </select>
+
+    <select id="selectRoleById" resultMap="com.ketech.mapper.SysRoleMapper.BaseResultMap">
+        SELECT * FROM sys_role WHERE id = #{id};
+    </select>
+
+    <select id="selectUserAndRoleById4" resultMap="userRoleListMap">
+        SELECT
+            u.id,
+            u.user_name,
+            u.user_password,
+            u.user_email,
+            u.user_info,
+            u.head_img,
+            u.create_time,
+            r.id role_id,
+            r.role_name role_role_name,
+            r.enabled role_enabled,
+            r.create_by role_create_by,
+            r.create_time role_create_time
+        FROM sys_user u
+        INNER JOIN sys_user_role ur ON u.id = ur.user_id
+        INNER JOIN sys_role r ON ur.role_id = r.id
+        WHERE u.id = #{id}
+    </select>
+
+    <select id="selectUserAndRoleAll" resultMap="userRoleListMap">
+        SELECT
+            u.id,
+            u.user_name,
+            u.user_password,
+            u.user_email,
+            u.user_info,
+            u.head_img,
+            u.create_time,
+            r.id role_id,
+            r.role_name role_role_name,
+            r.enabled role_enabled,
+            r.create_by role_create_by,
+            r.create_time role_create_time
+        FROM sys_user u
+        INNER JOIN sys_user_role ur ON u.id = ur.user_id
+        INNER JOIN sys_role r ON ur.role_id = r.id
+    </select>
+
+    <select id="selectURPAll" resultMap="userRoleListMap">
+        SELECT
+        u.id,
+        u.user_name,
+        u.user_password,
+        u.user_email,
+        u.user_info,
+        u.head_img,
+        u.create_time,
+        r.id role_id,
+        r.role_name role_role_name,
+        r.enabled role_enabled,
+        r.create_by role_create_by,
+        r.create_time role_create_time,
+        p.id role_privilege_id,
+        p.privilege_name role_privilege_privilege_name,
+        p.privilege_url role_privilege_privilege_url
+        FROM sys_user u
+        INNER JOIN sys_user_role ur ON u.id = ur.user_id
+        INNER JOIN sys_role r ON ur.role_id = r.id
+        INNER JOIN sys_role_privilege rp ON rp.role_id = r.id
+        INNER JOIN sys_privilege p ON p.id = rp.privilege_is
+    </select>
+
+    <select id="selectPrivilegeByRoleId" resultMap="com.ketech.mapper.SysPrivilegeMapper.BaseResultMap">
+        SELECT
+            p.id,
+            p.privilege_name,
+            p.privilege_url
+        FROM
+            sys_privilege p
+        INNER JOIN sys_role_privilege rp ON rp.privilege_is = p.id
+        WHERE
+            rp.role_id = #{roleId}
+    </select>
+
+    <select id="selectRoleByUserId" resultMap="rolePrivilegeLazyMap">
+        SELECT
+            r.id,
+            r.role_name,
+            r.enabled,
+            r.create_by,
+            r.create_time
+        FROM
+            sys_role r
+        INNER JOIN
+            sys_user_role ur ON ur.role_id = r.id
+        WHERE
+            ur.user_id = #{userId}
+    </select>
+
+    <select id="selectAllInfoLazy" resultMap="userRoleLazyMap">
+        SELECT
+            u.id,
+            u.user_name,
+            u.user_password,
+            u.user_email,
+            u.user_info,
+            u.head_img,
+            u.create_time
+        FROM
+            sys_user u
+    </select>
+
+
+</mapper>

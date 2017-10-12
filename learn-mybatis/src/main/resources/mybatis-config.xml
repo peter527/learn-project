@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <!-- 全局setting配置，根据需要添加 -->
+    <settings>
+        <setting name="logImpl" value="LOG4J"/>
+        <!--<setting name="mapUnderscoreToCamelCase" value="true"/>-->
+        <setting name="aggressiveLazyLoading" value="false"/>
+    </settings>
+
+    <typeAliases>
+        <package name="com.ketech.po"/>
+        <package name="com.ketech.vo"/>
+    </typeAliases>
+
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC">
+                <property name="" value=""/>
+            </transactionManager>
+            <dataSource type="UNPOOLED">
+                <property name="driver" value="com.mysql.jdbc.Driver"/>
+                <property name="url" value="jdbc:mysql://192.168.0.13:3306/mybatis"/>
+                <property name="username" value="root"/>
+                <property name="password" value="root"/>
+            </dataSource>
+        </environment>
+    </environments>
+    
+    <mappers>
+        <package name="com.ketech.mapper"/>
+        <!--<mapper resource="com/ketech/mapper/CountryMapper.xml"/>-->
+    </mappers>
+</configuration>
