@@ -13,6 +13,8 @@
         <module>learn-utils</module>
         <module>learn-httpclient</module>
         <module>learn-test</module>
+        <module>learnspring</module>
+        <module>learnspringMVC</module>
     </modules>
 
 
