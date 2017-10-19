@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * 包名: com.ketech.learnfreemarker <br/>
- * 类名: PagesCOntroller <br/>
+ * 类名: PagesController <br/>
  * 版本: version 1.0 <br/>
  * 作者: WuGuoHua <br/>
  * 创建日期: 2017年10月10日 <br/>
